@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Logo from "../ui/Logo";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 const links = [
     {
@@ -39,13 +40,33 @@ const links = [
 
 const Header = () => {
     // todo: move to usecontext for auth state
-  const [isAuth, setIsAuth] = useState(false);
+  const [isAuth, setIsAuth] = useState(true);
+
+  const pathname = usePathname();
 
   return isAuth ? (
-    <div className="flex py-6">
-      <Link href={"/"}>
+    <div className="flex items-center justify-center py-6">
+      <Link href={"/"} className="flex-1">
         <Logo />
       </Link>
+      <div className="flex items-center justify-center flex-1 gap-4">
+      {
+        links.map((link) => {
+            if (link.authReq) {
+                return (
+                    <div key={link.name} className="flex flex-col justify-center">
+                        <Link href={link.ref} className={`${pathname === link.ref ? 'text-(--color-primary) underline' : 'text-black/60 hover:text-(--color-primary) transition-colors'} text-sm font-medium uppercase`}>
+                            {link.name}
+                        </Link>
+                    </div>
+                )
+            }
+        })
+      }
+      </div>
+      <div className="flex-1">
+
+      </div>
     </div>
   ) : (
     <div className="flex items-center py-6">
